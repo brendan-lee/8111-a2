@@ -1,74 +1,77 @@
-const Order = require("./Order");
+const Order = require('./Order')
 
 const OrderState = Object.freeze({
-    WELCOMING:   Symbol("welcoming"),
-    SIZE:   Symbol("size"),
-    COLOUR:   Symbol("Colour"),
-    CLEANER:  Symbol("cleaner"),
-    PAYMENT: Symbol("payment")
-});
+    WELCOMING: Symbol('welcoming'),
+    SIZE: Symbol('size'),
+    COLOUR: Symbol('Colour'),
+    CLEANER: Symbol('cleaner'),
+    PAYMENT: Symbol('payment')
+})
 
-module.exports = class ShwarmaOrder extends Order{
-    constructor(sNumber, sUrl){
-        super(sNumber, sUrl);
-        this.stateCur = OrderState.WELCOMING;
-        this.sSize = "";
-        this.sColour = "";
-        this.sCleaner = "";
-        this.sItem = "Hand bag";
+module.exports = class ShwarmaOrder extends Order {
+    constructor(sNumber, sUrl) {
+        super(sNumber, sUrl)
+        this.stateCur = OrderState.WELCOMING
+        this.sSize = ''
+        this.sColour = ''
+        this.sCleaner = ''
+        this.sItem = 'Hand bag'
     }
-    handleInput(sInput){
-        let aReturn = [];
-        switch(this.stateCur){
+
+    handleInput(sInput) {
+        let aReturn = []
+        switch (this.stateCur) {
             case OrderState.WELCOMING:
-                this.stateCur = OrderState.SIZE;
-                aReturn.push("Welcome to Conestoga's Bags.");
-                aReturn.push("What size Hand Bag would you like?");
-                break;
+                this.stateCur = OrderState.SIZE
+                aReturn.push('Welcome to Conestoga\'s Bags.')
+                aReturn.push('What size Hand Bag would you like?')
+                break
             case OrderState.SIZE:
                 this.stateCur = OrderState.COLOUR
-                this.sSize = sInput;
-                aReturn.push("What Colour would you like?");
-                break;
+                this.sSize = sInput
+                aReturn.push('What Colour would you like?')
+                break
             case OrderState.COLOUR:
                 this.stateCur = OrderState.CLEANER
-                this.sColour = sInput;
-                aReturn.push("Would you like a cleaner with that?");
-                break;
+                this.sColour = sInput
+                aReturn.push('Would you like a cleaner with that?')
+                break
             case OrderState.CLEANER:
-                this.stateCur = OrderState.PAYMENT;
-                this.nOrder = 15;
-                if(sInput.toLowerCase() != "no"){
-                    this.sCleaner = sInput;
+                this.stateCur = OrderState.PAYMENT
+                this.nOrder = 15
+                if (sInput.toLowerCase() != 'no') {
+                    this.sCleaner = sInput
                 }
-                aReturn.push("Thank-you for your order of");
-                aReturn.push(`${this.sColour}, ${this.sSize} ${this.sItem}  `);
-                if(this.sCleaner){
-                    aReturn.push(this.sCleaner);
+                aReturn.push('Thank-you for your order of')
+                aReturn.push(`${this.sColour}, ${this.sSize} ${this.sItem}  `)
+                if (this.sCleaner) {
+                    aReturn.push(this.sCleaner)
                 }
-                aReturn.push(`Please pay for your order here`);
-                aReturn.push(`${this.sUrl}/payment/${this.sNumber}/`);
-                break;
+                aReturn.push(`Please pay for your order here`)
+                aReturn.push(`${this.sUrl}/payment/${this.sNumber}/`)
+                break
             case OrderState.PAYMENT:
-                console.log(sInput);
-                this.isDone(true);
-                let d = new Date();
-                d.setMinutes(d.getMinutes() + 20);
-                aReturn.push(`Your order will be delivered at ${d.toTimeString()}`);
-                break;
+                console.log(sInput)
+                this.isDone(true)
+                let d = new Date()
+                d.setMinutes(d.getMinutes() + 20)
+                aReturn.push(`Your order will be delivered at ${d.toTimeString()}`)
+                break
         }
-        return aReturn;
+        return aReturn
     }
-    renderForm(sTitle = "-1", sAmount = "-1"){
-      // your client id should be kept private
-      if(sTitle != "-1"){
-        this.sItem = sTitle;
-      }
-      if(sAmount != "-1"){
-        this.nOrder = sAmount;
-      }
-      const sClientID = process.env.SB_CLIENT_ID || 'put your client id here for testing ... Make sure that you delete it before committing'
-      return(`
+
+    renderForm(sTitle = '-1', sAmount = '-1') {
+        // your client id should be kept private
+        if (sTitle != '-1') {
+            this.sItem = sTitle
+        }
+        if (sAmount != '-1') {
+            this.nOrder = sAmount
+        }
+        const sClientID = process.env.SB_CLIENT_ID
+            || 'put your client id here for testing ... Make sure that you delete it before committing'
+        return (`
       <!DOCTYPE html>
   
       <head>
@@ -113,7 +116,7 @@ module.exports = class ShwarmaOrder extends Order{
       
       </body>
           
-      `);
-  
+      `)
+
     }
 }
